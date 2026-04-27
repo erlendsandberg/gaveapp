@@ -1,0 +1,259 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --color-brand: #d946ef;
+  --color-brand-dark: #a21caf;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #fafafa;
+  color: #18181b;
+  font-family: var(--font-sans);
+}
+
+/* === Bursdagsbakgrunn === */
+.party-bg {
+  background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 20%, #e9d5ff 45%, #c7d2fe 65%, #fde68a 100%);
+  background-size: 300% 300%;
+  animation: party-shift 10s ease-in-out infinite;
+}
+
+@keyframes party-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* === Disco-stråler === */
+.disco-rays {
+  background:
+    repeating-conic-gradient(
+      from 0deg at 50% 50%,
+      rgba(255, 255, 255, 0.18) 0deg 8deg,
+      transparent 8deg 25deg
+    );
+  animation: disco-rotate 40s linear infinite;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+@keyframes disco-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* === Streamere === */
+.streamer {
+  width: 6px;
+  height: 60px;
+  border-radius: 0 0 4px 4px;
+  animation: streamer-sway 3s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+@keyframes streamer-sway {
+  0%, 100% { transform: rotate(-8deg) scaleY(1); }
+  50% { transform: rotate(8deg) scaleY(1.1); }
+}
+
+/* === Ballonger === */
+.balloon {
+  position: absolute;
+  bottom: -100px;
+  animation-name: float-up;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+}
+
+@keyframes float-up {
+  0% { transform: translateY(0) translateX(0) rotate(-3deg); opacity: 0; }
+  10% { opacity: 1; }
+  25% { transform: translateY(-25vh) translateX(15px) rotate(3deg); }
+  50% { transform: translateY(-55vh) translateX(-20px) rotate(-3deg); }
+  75% { transform: translateY(-85vh) translateX(15px) rotate(3deg); }
+  90% { opacity: 1; }
+  100% { transform: translateY(-115vh) translateX(0) rotate(0deg); opacity: 0; }
+}
+
+/* === Konfetti === */
+.confetti {
+  position: absolute;
+  top: -20px;
+  animation-name: confetti-fall;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.confetti-rect { border-radius: 2px; }
+.confetti-circle { border-radius: 50%; }
+.confetti-tri {
+  width: 0 !important;
+  height: 0 !important;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 10px solid;
+}
+
+@keyframes confetti-fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.95; }
+  100% { transform: translateY(110vh) rotate(900deg); opacity: 0.5; }
+}
+
+/* === Glitrende stjerner === */
+.sparkle {
+  position: absolute;
+  background: radial-gradient(circle, #fff 0%, #fef3c7 50%, transparent 70%);
+  border-radius: 50%;
+  animation: sparkle-twinkle 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes sparkle-twinkle {
+  0%, 100% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.5); opacity: 1; }
+}
+
+/* === Kort === */
+.card-pop {
+  animation: card-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes card-pop {
+  0% { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+  60% { transform: scale(1.05) rotate(2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.party-glow {
+  background: radial-gradient(circle at 50% 50%, rgba(217, 70, 239, 0.4), transparent 70%);
+  animation: glow-pulse 3s ease-in-out infinite;
+  filter: blur(20px);
+}
+
+@keyframes glow-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.15); opacity: 0.9; }
+}
+
+/* === Tittel === */
+.rainbow-text {
+  background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #a855f7, #ec4899, #ef4444);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow-shift 4s linear infinite;
+}
+
+@keyframes rainbow-shift {
+  to { background-position: 200% center; }
+}
+
+.wiggle {
+  display: inline-block;
+  animation: wiggle 2s ease-in-out infinite;
+  transform-origin: center;
+  width: 100%;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-2deg) scale(1); }
+  25% { transform: rotate(2deg) scale(1.03); }
+  50% { transform: rotate(-1deg) scale(1); }
+  75% { transform: rotate(1deg) scale(1.03); }
+}
+
+/* === Knapp === */
+.party-btn {
+  background-color: #ec4899;
+  background-image: linear-gradient(90deg, #ec4899, #a855f7, #3b82f6, #ec4899);
+  background-size: 200% auto;
+  background-position: 0% center;
+  border: none;
+  animation: btn-rainbow 3s linear infinite;
+  transition: transform 0.15s ease;
+}
+
+.party-btn:hover:not(:disabled) {
+  transform: scale(1.04) rotate(-1deg);
+  animation-duration: 1.2s;
+}
+
+.party-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+@keyframes btn-rainbow {
+  to { background-position: 200% center; }
+}
+
+/* === Animasjoner på SVG-figurer === */
+.cake-bounce {
+  animation: cake-bob 2s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+@keyframes cake-bob {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.05); }
+}
+
+.cake-flame {
+  transform-origin: 60px 28px;
+  animation: flicker 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes flicker {
+  0% { transform: scale(0.95) rotate(-5deg); opacity: 0.9; }
+  100% { transform: scale(1.15) rotate(5deg); opacity: 1; }
+}
+
+.gift-spin {
+  animation: gift-rock 1.6s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes gift-rock {
+  0%, 100% { transform: rotate(-12deg) translateY(0); }
+  50% { transform: rotate(12deg) translateY(-6px); }
+}
+
+.hat-tilt {
+  animation: hat-wobble 2.4s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+@keyframes hat-wobble {
+  0%, 100% { transform: rotate(8deg); }
+  50% { transform: rotate(-8deg) translateY(-4px); }
+}
+
+/* === Klikk-burst === */
+.burst {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  pointer-events: none;
+  animation: burst-fly 1.2s cubic-bezier(0.2, 0.7, 0.4, 1) forwards;
+  z-index: 50;
+}
+
+@keyframes burst-fly {
+  0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); opacity: 1; }
+  100% {
+    transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(540deg) scale(0.4);
+    opacity: 0;
+  }
+}
