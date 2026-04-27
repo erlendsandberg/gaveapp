@@ -93,3 +93,49 @@ export async function getUserFamilies(uid: string): Promise<Family[]> {
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }) as Family);
 }
+
+/**
+ * Oppretter en barneprofil (ingen innlogging). Barnet legges til som familiemedlem
+ * og foreldres uid lagres i `managedBy`-feltet.
+ */
+export async function createManagedProfile(
+  displayName: string,
+  birthday: string,
+  familyId: string,
+  managedByUid: string
+): Promise<UserProfile> {
+  if (!db) throw new Error("Firestore ikke tilgjengelig");
+
+  const profileRef = doc(collection(db, "users"));
+
+  const profile: UserProfile = {
+    uid: profileRef.id,
+    email: null,
+    username: null,
+    displayName: displayName.trim(),
+    photoURL: "",
+    birthday,
+    familyIds: [familyId],
+    managedBy: managedByUid,
+  };
+
+  await setDoc(profileRef, { ...profile, createdAt: serverTimestamp() });
+
+  // Legg barnet til i familien
+  await updateDoc(doc(db, "families", familyId), {
+    memberIds: arrayUnion(profileRef.id),
+  });
+
+  return profile;
+}
+
+/**
+ * Oppdaterer navn og/eller bursdag på en barneprofil.
+ */
+export async function updateManagedProfile(
+  uid: string,
+  updates: { displayName?: string; birthday?: string }
+): Promise<void> {
+  if (!db) throw new Error("Firestore ikke tilgjengelig");
+  await updateDoc(doc(db, "users", uid), updates);
+}

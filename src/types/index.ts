@@ -8,6 +8,8 @@ export type UserProfile = {
   photoURL: string;
   birthday: string | null;
   familyIds: string[];
+  /** UID of the parent/guardian who manages this profile (child profiles only) */
+  managedBy?: string;
   createdAt?: Timestamp;
 };
 
