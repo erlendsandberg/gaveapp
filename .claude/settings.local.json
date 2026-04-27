@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npm create *)",
+      "Bash(mv temp-scaffold/.gitignore temp-scaffold/README.md temp-scaffold/eslint.config.js temp-scaffold/index.html temp-scaffold/package.json temp-scaffold/tsconfig.app.json temp-scaffold/tsconfig.json temp-scaffold/tsconfig.node.json temp-scaffold/vite.config.ts .)",
+      "Bash(mv temp-scaffold/public temp-scaffold/src .)",
+      "Bash(rmdir temp-scaffold *)",
+      "Bash(rm -f src/App.css)",
+      "Bash(rm -rf src/assets)",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(git *)",
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "PowerShell(jq -e '.hooks.Stop[] | .hooks[] | select\\(.type == \"command\"\\) | .command' \"C:\\\\Users\\\\ErlendSynnes-Sandber\\\\OneDrive - ESS Consulting AS\\\\ESSC\\\\AI\\\\Claude Code\\\\gaveapp\\\\.claude\\\\settings.local.json\")",
+      "PowerShell($content = Get-Content \"C:\\\\Users\\\\ErlendSynnes-Sandber\\\\OneDrive - ESS Consulting AS\\\\ESSC\\\\AI\\\\Claude Code\\\\gaveapp\\\\.claude\\\\settings.local.json\" -Raw; $json = $content | ConvertFrom-Json; $cmd = $json.hooks.Stop[0].hooks[0].command; Write-Output \"Hook-kommando: $cmd\")"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "Push-Location 'C:\\Users\\ErlendSynnes-Sandber\\OneDrive - ESS Consulting AS\\ESSC\\AI\\Claude Code\\gaveapp'; if (git status --porcelain) { git add -A; $files = (git diff --staged --name-only | Select-Object -First 3 | ForEach-Object { Split-Path $_ -Leaf }) -join ', '; git commit -m \"auto: $files\"; git push origin main }; Pop-Location",
+            "shell": "powershell",
+            "statusMessage": "Committer og pusher endringer…"
+          }
+        ]
+      }
+    ]
+  }
+}
