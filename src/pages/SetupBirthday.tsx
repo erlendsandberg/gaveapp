@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
 import { useAuth } from "../context/AuthContext";
 
 export function SetupBirthday() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [birthday, setBirthday] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -16,6 +18,7 @@ export function SetupBirthday() {
     setError(null);
     try {
       await updateDoc(doc(db, "users", user.uid), { birthday });
+      navigate("/");
     } catch {
       setError("Noe gikk galt. Prøv igjen.");
       setSaving(false);
