@@ -7,7 +7,6 @@ import {
   getDocs,
   query,
   where,
-  orderBy,
   serverTimestamp,
 } from "firebase/firestore";
 import { db } from "./firebase";
@@ -55,13 +54,16 @@ export async function unreserveWish(wishId: string): Promise<void> {
 
 export async function getWishesByOwner(ownerId: string): Promise<Wish[]> {
   if (!db) return [];
-  const q = query(
-    collection(db, "wishes"),
-    where("ownerId", "==", ownerId),
-    orderBy("createdAt", "asc")
-  );
+  // Enkel equality-filter – ingen sammensatt indeks nødvendig
+  const q = query(collection(db, "wishes"), where("ownerId", "==", ownerId));
   const snap = await getDocs(q);
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() }) as Wish);
+  const wishes = snap.docs.map((d) => ({ id: d.id, ...d.data() }) as Wish);
+  // Sorter klientsiden på createdAt
+  return wishes.sort((a, b) => {
+    const at = (a.createdAt as { seconds?: number })?.seconds ?? 0;
+    const bt = (b.createdAt as { seconds?: number })?.seconds ?? 0;
+    return at - bt;
+  });
 }
 
 export const PRIORITY_LABEL: Record<number, string> = {

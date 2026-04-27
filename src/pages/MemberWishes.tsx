@@ -36,12 +36,14 @@ export function MemberWishes() {
       familyId ? getFamily(familyId) : Promise.resolve(null),
       getFamilyMembers([uid]),
       getWishesByOwner(uid),
-    ]).then(([f, members, w]) => {
-      setFamily(f);
-      setMember(members[0] ?? null);
-      setWishes(sortWishes(w));
-      setLoading(false);
-    });
+    ])
+      .then(([f, members, w]) => {
+        setFamily(f);
+        setMember(members[0] ?? null);
+        setWishes(sortWishes(w));
+      })
+      .catch((err) => console.error("MemberWishes load error:", err))
+      .finally(() => setLoading(false));
   }, [familyId, uid]);
 
   function sortWishes(w: Wish[]) {

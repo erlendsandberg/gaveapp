@@ -21,10 +21,10 @@ export function MyWishes() {
 
   useEffect(() => {
     if (!user) return;
-    getWishesByOwner(user.uid).then((w) => {
-      setWishes(w);
-      setLoading(false);
-    });
+    getWishesByOwner(user.uid)
+      .then((w) => setWishes(w))
+      .catch((err) => console.error("MyWishes load error:", err))
+      .finally(() => setLoading(false));
   }, [user]);
 
   async function handleAdd(input: WishInput) {
