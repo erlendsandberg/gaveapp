@@ -78,9 +78,15 @@ export function Home() {
                   )}
                   <div className="flex-1 min-w-0">
                     <span className="font-medium text-zinc-900">{member.displayName}</span>
-                    <span className="ml-2 text-xs text-zinc-400">{formatBirthday(member.birthday!)} · fyller {age}</span>
+                    <span className="ml-2 text-xs text-zinc-400">
+                      {formatBirthday(member.birthday!)} · fyller {age}
+                    </span>
                   </div>
-                  <span className={`text-sm font-semibold ${isToday ? "text-orange-600" : isSoon ? "text-fuchsia-600" : "text-zinc-500"}`}>
+                  <span
+                    className={`text-sm font-semibold ${
+                      isToday ? "text-orange-600" : isSoon ? "text-fuchsia-600" : "text-zinc-500"
+                    }`}
+                  >
                     {formatDaysUntil(daysUntil)}
                   </span>
                 </div>
@@ -92,6 +98,22 @@ export function Home() {
 
       {/* Hurtiglenker */}
       <section className="grid grid-cols-2 gap-4">
+        <Link
+          to="/familier"
+          className="rounded-2xl bg-gradient-to-br from-fuchsia-500 to-pink-500 p-5 shadow-sm hover:shadow-md transition group"
+        >
+          <span className="text-3xl">👨‍👩‍👧‍👦</span>
+          <p className="mt-2 font-semibold text-white">Mine familier</p>
+          <p className="text-xs text-fuchsia-100">Ønskelister og bursdager</p>
+        </Link>
+        <Link
+          to="/mine-ønsker"
+          className="rounded-2xl bg-white p-5 shadow-sm hover:shadow-md transition group"
+        >
+          <span className="text-3xl">🎁</span>
+          <p className="mt-2 font-semibold text-zinc-900 group-hover:text-fuchsia-700">Mine ønsker</p>
+          <p className="text-xs text-zinc-500">Din ønskeliste</p>
+        </Link>
         <Link
           to="/kalender"
           className="rounded-2xl bg-white p-5 shadow-sm hover:shadow-md transition group"

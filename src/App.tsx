@@ -6,6 +6,10 @@ import { Home } from "./pages/Home";
 import { Profile } from "./pages/Profile";
 import { SetupBirthday } from "./pages/SetupBirthday";
 import { BirthdayCalendar } from "./pages/BirthdayCalendar";
+import { Families } from "./pages/Families";
+import { FamilyDetail } from "./pages/FamilyDetail";
+import { MyWishes } from "./pages/MyWishes";
+import { MemberWishes } from "./pages/MemberWishes";
 import { SetupNotice } from "./pages/SetupNotice";
 import { isFirebaseConfigured } from "./lib/firebase";
 
@@ -20,7 +24,7 @@ export default function App() {
         <Routes>
           <Route path="/logg-inn" element={<Login />} />
 
-          {/* Oppsett-ruter krever innlogging men ikke bursdag */}
+          {/* Oppsett — krever innlogging men ikke bursdag */}
           <Route
             path="/oppsett"
             element={
@@ -52,6 +56,38 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <BirthdayCalendar />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/familier"
+            element={
+              <ProtectedRoute>
+                <Families />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/familie/:familyId"
+            element={
+              <ProtectedRoute>
+                <FamilyDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/familie/:familyId/bruker/:uid"
+            element={
+              <ProtectedRoute>
+                <MemberWishes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mine-ønsker"
+            element={
+              <ProtectedRoute>
+                <MyWishes />
               </ProtectedRoute>
             }
           />

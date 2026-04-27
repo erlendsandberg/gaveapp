@@ -23,12 +23,13 @@ export type Family = {
 export type Wish = {
   id: string;
   ownerId: string;
-  familyId: string;
+  familyId?: string;
   title: string;
   url?: string;
   price?: number;
   priority: 1 | 2 | 3;
   imageUrl?: string;
+  note?: string;
   reservedBy?: string | null;
   createdAt?: Timestamp;
 };
