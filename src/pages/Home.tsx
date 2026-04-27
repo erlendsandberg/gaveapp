@@ -59,6 +59,7 @@ export function Home() {
             {upcoming.map((member) => {
               const { isToday, isSoon, daysUntil, age } = nextBirthday(member.birthday!);
               const isSelf = member.uid === profile?.uid;
+              const isManagedByMe = member.managedBy === profile?.uid;
               const href = isSelf ? "/mine-ønsker" : `/bruker/${member.uid}`;
               return (
                 <Link
@@ -80,22 +81,35 @@ export function Home() {
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <span className="font-medium text-zinc-900 group-hover:text-fuchsia-700">
-                      {member.displayName}
-                    </span>
-                    <span className="ml-2 text-xs text-zinc-400">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="font-medium text-zinc-900 group-hover:text-fuchsia-700">
+                        {member.displayName}
+                      </span>
+                      {isManagedByMe && (
+                        <span className="rounded-full bg-fuchsia-100 px-1.5 py-0.5 text-xs text-fuchsia-600">
+                          👶 ditt barn
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-xs text-zinc-400">
                       {formatBirthday(member.birthday!)} · fyller {age}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`text-sm font-semibold ${
-                        isToday ? "text-orange-600" : isSoon ? "text-fuchsia-600" : "text-zinc-500"
-                      }`}
-                    >
-                      {formatDaysUntil(daysUntil)}
-                    </span>
-                    <span className="text-zinc-300 group-hover:text-fuchsia-400 transition">→</span>
+                  <div className="flex items-center gap-1.5">
+                    {isManagedByMe ? (
+                      <span className="rounded-lg bg-fuchsia-600 px-2.5 py-1 text-xs font-semibold text-white group-hover:bg-fuchsia-700 transition">
+                        Ønskeliste 🎁
+                      </span>
+                    ) : (
+                      <>
+                        <span className={`text-sm font-semibold ${
+                          isToday ? "text-orange-600" : isSoon ? "text-fuchsia-600" : "text-zinc-500"
+                        }`}>
+                          {formatDaysUntil(daysUntil)}
+                        </span>
+                        <span className="text-zinc-300 group-hover:text-fuchsia-400 transition">→</span>
+                      </>
+                    )}
                   </div>
                 </Link>
               );
