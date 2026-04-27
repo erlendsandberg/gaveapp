@@ -17,7 +17,7 @@ import { WishForm, EMPTY_WISH } from "../components/WishForm";
 import type { Family, UserProfile, Wish } from "../types";
 
 export function MemberWishes() {
-  const { familyId, uid } = useParams<{ familyId: string; uid: string }>();
+  const { familyId, uid } = useParams<{ familyId?: string; uid: string }>();
   const { user } = useAuth();
 
   const [family, setFamily] = useState<Family | null>(null);
@@ -31,9 +31,9 @@ export function MemberWishes() {
   const [editingProfile, setEditingProfile] = useState(false);
 
   useEffect(() => {
-    if (!familyId || !uid) return;
+    if (!uid) return;
     Promise.all([
-      getFamily(familyId),
+      familyId ? getFamily(familyId) : Promise.resolve(null),
       getFamilyMembers([uid]),
       getWishesByOwner(uid),
     ]).then(([f, members, w]) => {
@@ -125,14 +125,12 @@ export function MemberWishes() {
   return (
     <div className="mx-auto max-w-xl p-6">
       {/* Back nav */}
-      {family && (
-        <Link
-          to={`/familie/${familyId}`}
-          className="mb-4 block text-sm text-zinc-500 hover:text-zinc-800"
-        >
-          ← {family.name}
-        </Link>
-      )}
+      <Link
+        to={family && familyId ? `/familie/${familyId}` : "/"}
+        className="mb-4 block text-sm text-zinc-500 hover:text-zinc-800"
+      >
+        ← {family ? family.name : "Hjem"}
+      </Link>
 
       {/* Member profile card */}
       <div

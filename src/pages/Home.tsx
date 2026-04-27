@@ -58,15 +58,18 @@ export function Home() {
           <div className="space-y-2">
             {upcoming.map((member) => {
               const { isToday, isSoon, daysUntil, age } = nextBirthday(member.birthday!);
+              const isSelf = member.uid === profile?.uid;
+              const href = isSelf ? "/mine-ønsker" : `/bruker/${member.uid}`;
               return (
-                <div
+                <Link
                   key={member.uid}
-                  className={`flex items-center gap-3 rounded-xl px-4 py-3 shadow-sm ${
+                  to={href}
+                  className={`flex items-center gap-3 rounded-xl px-4 py-3 shadow-sm transition hover:shadow-md group ${
                     isToday
                       ? "bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200"
                       : isSoon
                       ? "bg-gradient-to-r from-fuchsia-50 to-pink-50 border border-fuchsia-100"
-                      : "bg-white border border-zinc-100"
+                      : "bg-white border border-zinc-100 hover:border-fuchsia-200"
                   }`}
                 >
                   {member.photoURL ? (
@@ -77,19 +80,24 @@ export function Home() {
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <span className="font-medium text-zinc-900">{member.displayName}</span>
+                    <span className="font-medium text-zinc-900 group-hover:text-fuchsia-700">
+                      {member.displayName}
+                    </span>
                     <span className="ml-2 text-xs text-zinc-400">
                       {formatBirthday(member.birthday!)} · fyller {age}
                     </span>
                   </div>
-                  <span
-                    className={`text-sm font-semibold ${
-                      isToday ? "text-orange-600" : isSoon ? "text-fuchsia-600" : "text-zinc-500"
-                    }`}
-                  >
-                    {formatDaysUntil(daysUntil)}
-                  </span>
-                </div>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`text-sm font-semibold ${
+                        isToday ? "text-orange-600" : isSoon ? "text-fuchsia-600" : "text-zinc-500"
+                      }`}
+                    >
+                      {formatDaysUntil(daysUntil)}
+                    </span>
+                    <span className="text-zinc-300 group-hover:text-fuchsia-400 transition">→</span>
+                  </div>
+                </Link>
               );
             })}
           </div>

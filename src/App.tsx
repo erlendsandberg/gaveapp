@@ -91,6 +91,15 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          {/* Direkte lenke til ønskeliste uten familiekontekst */}
+          <Route
+            path="/bruker/:uid"
+            element={
+              <ProtectedRoute>
+                <MemberWishes />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
