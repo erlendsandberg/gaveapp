@@ -10,18 +10,21 @@ type AuthContextValue = {
   user: User | null;
   profile: UserProfile | null;
   loading: boolean;
+  firestoreError: string | null;
 };
 
 const AuthContext = createContext<AuthContextValue>({
   user: null,
   profile: null,
   loading: true,
+  firestoreError: null,
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [firestoreError, setFirestoreError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!auth) {
@@ -39,17 +42,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!user || !db) return;
-    const ref = doc(db, "users", user.uid);
-    const unsub = onSnapshot(ref, (snap) => {
-      setProfile(snap.exists() ? (snap.data() as UserProfile) : null);
+    if (!user || !db) {
+      if (user && !db) setLoading(false);
+      return;
+    }
+
+    // Sikkerhetsnett: gi opp etter 8 sekunder
+    const timeout = setTimeout(() => {
       setLoading(false);
-    });
-    return unsub;
+      setFirestoreError("permission-denied");
+    }, 8000);
+
+    const ref = doc(db, "users", user.uid);
+    const unsub = onSnapshot(
+      ref,
+      (snap) => {
+        clearTimeout(timeout);
+        setProfile(snap.exists() ? (snap.data() as UserProfile) : null);
+        setFirestoreError(null);
+        setLoading(false);
+      },
+      (err) => {
+        clearTimeout(timeout);
+        setFirestoreError(err.code);
+        setLoading(false);
+      }
+    );
+
+    return () => {
+      clearTimeout(timeout);
+      unsub();
+    };
   }, [user]);
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading }}>
+    <AuthContext.Provider value={{ user, profile, loading, firestoreError }}>
       {children}
     </AuthContext.Provider>
   );
