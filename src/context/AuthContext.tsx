@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import type { User } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../lib/firebase";
 import type { UserProfile } from "../types";
 
@@ -19,6 +19,20 @@ const AuthContext = createContext<AuthContextValue>({
   loading: true,
   firestoreError: null,
 });
+
+async function createMissingProfile(user: User) {
+  if (!db) return;
+  await setDoc(doc(db, "users", user.uid), {
+    uid: user.uid,
+    email: user.email,
+    username: null,
+    displayName: user.displayName ?? user.email?.split("@")[0] ?? "Bruker",
+    photoURL: user.photoURL ?? "",
+    birthday: null,
+    familyIds: [],
+    createdAt: serverTimestamp(),
+  });
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -47,7 +61,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // Sikkerhetsnett: gi opp etter 8 sekunder
     const timeout = setTimeout(() => {
       setLoading(false);
       setFirestoreError("permission-denied");
@@ -56,11 +69,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const ref = doc(db, "users", user.uid);
     const unsub = onSnapshot(
       ref,
-      (snap) => {
+      async (snap) => {
         clearTimeout(timeout);
-        setProfile(snap.exists() ? (snap.data() as UserProfile) : null);
-        setFirestoreError(null);
-        setLoading(false);
+        if (!snap.exists()) {
+          // Profil mangler — opprett den automatisk
+          await createMissingProfile(user);
+          // onSnapshot vil fyre på nytt etter setDoc
+        } else {
+          setProfile(snap.data() as UserProfile);
+          setFirestoreError(null);
+          setLoading(false);
+        }
       },
       (err) => {
         clearTimeout(timeout);

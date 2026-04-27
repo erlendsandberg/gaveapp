@@ -9,7 +9,15 @@ import { nextBirthday, formatBirthday, formatDaysUntil } from "../lib/birthdays"
 export function Profile() {
   const { user, profile } = useAuth();
 
-  if (!user || !profile) return null;
+  if (!user) return null;
+
+  if (!profile) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <span className="text-4xl animate-bounce">🎂</span>
+      </div>
+    );
+  }
 
   const isUsername = isUsernameAccount(user.email);
 
