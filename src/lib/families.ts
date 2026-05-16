@@ -5,7 +5,9 @@ import {
   getDocs,
   setDoc,
   updateDoc,
+  deleteDoc,
   arrayUnion,
+  arrayRemove,
   query,
   where,
   serverTimestamp,
@@ -138,4 +140,19 @@ export async function updateManagedProfile(
 ): Promise<void> {
   if (!db) throw new Error("Firestore ikke tilgjengelig");
   await updateDoc(doc(db, "users", uid), updates);
+}
+
+/**
+ * Sletter en barneprofil og fjerner den fra familien.
+ * Kan bare kalles av forvalteren (managedBy).
+ */
+export async function deleteManagedProfile(
+  uid: string,
+  familyId: string
+): Promise<void> {
+  if (!db) throw new Error("Firestore ikke tilgjengelig");
+  await Promise.all([
+    deleteDoc(doc(db, "users", uid)),
+    updateDoc(doc(db, "families", familyId), { memberIds: arrayRemove(uid) }),
+  ]);
 }

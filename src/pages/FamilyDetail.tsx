@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { getFamily, getFamilyMembers, createManagedProfile } from "../lib/families";
+import { getFamily, getFamilyMembers, createManagedProfile, deleteManagedProfile } from "../lib/families";
 import { nextBirthday, formatBirthday, formatDaysUntil } from "../lib/birthdays";
 import type { Family, UserProfile } from "../types";
 
@@ -35,9 +35,16 @@ export function FamilyDetail() {
 
   function handleChildAdded(child: UserProfile) {
     setMembers((prev) => sortMembers([...prev, child]));
-    // Update local family memberIds to avoid stale state
     setFamily((f) => f ? { ...f, memberIds: [...f.memberIds, child.uid] } : f);
     setShowAddChild(false);
+  }
+
+  async function handleDeleteChild(child: UserProfile) {
+    if (!family) return;
+    if (!confirm(`Slett "${child.displayName}"? Dette kan ikke angres.`)) return;
+    await deleteManagedProfile(child.uid, family.id);
+    setMembers((prev) => prev.filter((m) => m.uid !== child.uid));
+    setFamily((f) => f ? { ...f, memberIds: f.memberIds.filter((id) => id !== child.uid) } : f);
   }
 
   if (loading) return <div className="flex min-h-screen items-center justify-center text-zinc-400">Laster…</div>;
@@ -95,6 +102,7 @@ export function FamilyDetail() {
             isSelf={member.uid === user?.uid}
             isManagedByMe={member.managedBy === user?.uid}
             familyId={family.id}
+            onDelete={member.managedBy === user?.uid ? handleDeleteChild : undefined}
           />
         ))}
       </div>
@@ -202,12 +210,14 @@ function MemberCard({
   isSelf,
   isManagedByMe,
   familyId,
+  onDelete,
 }: {
   member: UserProfile;
   isFirst: boolean;
   isSelf: boolean;
   isManagedByMe: boolean;
   familyId: string;
+  onDelete?: (member: UserProfile) => void;
 }) {
   const bday = member.birthday ? nextBirthday(member.birthday) : null;
   const isToday = bday?.isToday ?? false;
@@ -294,6 +304,14 @@ function MemberCard({
           >
             {isSelf ? "Mine ønsker" : isManagedByMe ? "Administrer 🎁" : "Ønskeliste 🎁"}
           </Link>
+          {onDelete && (
+            <button
+              onClick={() => onDelete(member)}
+              className="rounded-lg border border-red-100 px-3 py-1 text-xs text-red-400 hover:bg-red-50 hover:border-red-200"
+            >
+              Slett
+            </button>
+          )}
         </div>
       </div>
 
