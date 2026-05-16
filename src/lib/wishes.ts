@@ -21,11 +21,18 @@ export type WishInput = {
   note?: string;
 };
 
+/** Fjerner undefined-verdier — Firestore godtar ikke undefined som feltverdi */
+function stripUndefined<T extends object>(obj: T): Partial<T> {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([, v]) => v !== undefined)
+  ) as Partial<T>;
+}
+
 export async function addWish(ownerId: string, input: WishInput): Promise<string> {
   if (!db) throw new Error("Firestore ikke tilgjengelig");
   const ref = await addDoc(collection(db, "wishes"), {
     ownerId,
-    ...input,
+    ...stripUndefined(input),
     reservedBy: null,
     createdAt: serverTimestamp(),
   });
@@ -34,7 +41,7 @@ export async function addWish(ownerId: string, input: WishInput): Promise<string
 
 export async function updateWish(wishId: string, input: Partial<WishInput>): Promise<void> {
   if (!db) throw new Error("Firestore ikke tilgjengelig");
-  await updateDoc(doc(db, "wishes", wishId), input);
+  await updateDoc(doc(db, "wishes", wishId), stripUndefined(input));
 }
 
 export async function deleteWish(wishId: string): Promise<void> {
