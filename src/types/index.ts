@@ -33,6 +33,7 @@ export type Wish = {
   imageUrl?: string;
   note?: string;
   reservedBy?: string | null;
+  purchased?: boolean;
   createdAt?: Timestamp;
 };
 

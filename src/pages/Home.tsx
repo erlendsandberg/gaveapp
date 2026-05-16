@@ -137,6 +137,14 @@ export function Home() {
           <p className="text-xs text-zinc-500">Din ønskeliste</p>
         </Link>
         <Link
+          to="/mine-reservasjoner"
+          className="rounded-2xl bg-white p-5 shadow-sm hover:shadow-md transition group"
+        >
+          <span className="text-3xl">🛍️</span>
+          <p className="mt-2 font-semibold text-zinc-900 group-hover:text-fuchsia-700">Mine reservasjoner</p>
+          <p className="text-xs text-zinc-500">Gaver du har valgt å kjøpe</p>
+        </Link>
+        <Link
           to="/kalender"
           className="rounded-2xl bg-white p-5 shadow-sm hover:shadow-md transition group"
         >

@@ -56,7 +56,24 @@ export async function reserveWish(wishId: string, uid: string): Promise<void> {
 
 export async function unreserveWish(wishId: string): Promise<void> {
   if (!db) throw new Error("Firestore ikke tilgjengelig");
-  await updateDoc(doc(db, "wishes", wishId), { reservedBy: null });
+  await updateDoc(doc(db, "wishes", wishId), { reservedBy: null, purchased: false });
+}
+
+export async function markAsPurchased(wishId: string): Promise<void> {
+  if (!db) throw new Error("Firestore ikke tilgjengelig");
+  await updateDoc(doc(db, "wishes", wishId), { purchased: true });
+}
+
+export async function unmarkAsPurchased(wishId: string): Promise<void> {
+  if (!db) throw new Error("Firestore ikke tilgjengelig");
+  await updateDoc(doc(db, "wishes", wishId), { purchased: false });
+}
+
+export async function getWishesByReserver(reserverUid: string): Promise<Wish[]> {
+  if (!db) return [];
+  const q = query(collection(db, "wishes"), where("reservedBy", "==", reserverUid));
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }) as Wish);
 }
 
 export async function getWishesByOwner(ownerId: string): Promise<Wish[]> {

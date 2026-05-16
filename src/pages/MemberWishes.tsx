@@ -9,6 +9,8 @@ import {
   deleteWish,
   reserveWish,
   unreserveWish,
+  markAsPurchased,
+  unmarkAsPurchased,
   type WishInput,
 } from "../lib/wishes";
 import { nextBirthday, formatBirthday, formatDaysUntil } from "../lib/birthdays";
@@ -98,7 +100,21 @@ export function MemberWishes() {
   async function handleUnreserve(wishId: string) {
     await unreserveWish(wishId);
     setWishes((prev) =>
-      prev.map((w) => (w.id === wishId ? { ...w, reservedBy: null } : w))
+      prev.map((w) => (w.id === wishId ? { ...w, reservedBy: null, purchased: false } : w))
+    );
+  }
+
+  async function handleMarkPurchased(wishId: string) {
+    await markAsPurchased(wishId);
+    setWishes((prev) =>
+      prev.map((w) => (w.id === wishId ? { ...w, purchased: true } : w))
+    );
+  }
+
+  async function handleUnmarkPurchased(wishId: string) {
+    await unmarkAsPurchased(wishId);
+    setWishes((prev) =>
+      prev.map((w) => (w.id === wishId ? { ...w, purchased: false } : w))
     );
   }
 
@@ -313,6 +329,8 @@ export function MemberWishes() {
                 onDelete={isParent ? handleDelete : undefined}
                 onReserve={!isParent ? handleReserve : undefined}
                 onUnreserve={!isParent ? handleUnreserve : undefined}
+                onMarkPurchased={!isParent ? handleMarkPurchased : undefined}
+                onUnmarkPurchased={!isParent ? handleUnmarkPurchased : undefined}
               />
             ))}
           </div>

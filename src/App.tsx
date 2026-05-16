@@ -10,6 +10,7 @@ import { Families } from "./pages/Families";
 import { FamilyDetail } from "./pages/FamilyDetail";
 import { MyWishes } from "./pages/MyWishes";
 import { MemberWishes } from "./pages/MemberWishes";
+import { MyReservations } from "./pages/MyReservations";
 import { SetupNotice } from "./pages/SetupNotice";
 import { isFirebaseConfigured } from "./lib/firebase";
 
@@ -88,6 +89,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <MyWishes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mine-reservasjoner"
+            element={
+              <ProtectedRoute>
+                <MyReservations />
               </ProtectedRoute>
             }
           />
