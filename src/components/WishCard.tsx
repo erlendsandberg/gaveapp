@@ -3,11 +3,13 @@ import { PRIORITY_LABEL, PRIORITY_COLOR } from "../lib/wishes";
 
 interface WishCardProps {
   wish: Wish;
-  /** True når innlogget bruker ser sin egen ønskeliste */
-  isOwn: boolean;
   currentUserId?: string;
+  /** Skjul all reservasjonsstatus (bruk på din egen ønskeliste) */
+  hideReservationStatus?: boolean;
+  // Administrasjonskontroller
   onEdit?: (wish: Wish) => void;
   onDelete?: (wishId: string) => void;
+  // Reservasjonskontroller
   onReserve?: (wishId: string) => void;
   onUnreserve?: (wishId: string) => void;
   onMarkPurchased?: (wishId: string) => void;
@@ -16,8 +18,8 @@ interface WishCardProps {
 
 export function WishCard({
   wish,
-  isOwn,
   currentUserId,
+  hideReservationStatus = false,
   onEdit,
   onDelete,
   onReserve,
@@ -29,32 +31,33 @@ export function WishCard({
   const isReservedByOther = !!wish.reservedBy && !isReservedByMe;
   const isPurchased = !!wish.purchased;
 
+  const hasManagement = !!(onEdit || onDelete);
+  const hasReservation = !!(onReserve || onMarkPurchased || onUnreserve || onUnmarkPurchased);
+
   return (
     <div className={`rounded-2xl border p-4 shadow-sm transition ${
       isPurchased && isReservedByMe
         ? "border-green-200 bg-green-50"
         : isReservedByMe
         ? "border-fuchsia-100 bg-fuchsia-50/40"
-        : isReservedByOther
+        : isReservedByOther && !hideReservationStatus
         ? "border-zinc-100 bg-white opacity-60"
         : "border-zinc-100 bg-white"
     }`}>
       <div className="flex items-start gap-3">
-        {/* Priority badge */}
+        {/* Prioritet */}
         <div className={`mt-0.5 flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold ${PRIORITY_COLOR[wish.priority]}`}>
           {PRIORITY_LABEL[wish.priority]}
         </div>
 
-        {/* Content */}
+        {/* Innhold */}
         <div className="flex-1 min-w-0">
           <p className={`font-semibold leading-snug ${isPurchased && isReservedByMe ? "line-through text-zinc-400" : "text-zinc-900"}`}>
             {wish.title}
           </p>
-
           {wish.note && (
             <p className="mt-0.5 text-xs text-zinc-500 line-clamp-2">{wish.note}</p>
           )}
-
           <div className="mt-1.5 flex flex-wrap items-center gap-2">
             {wish.price !== undefined && wish.price !== null && (
               <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-600">
@@ -75,10 +78,11 @@ export function WishCard({
           </div>
         </div>
 
-        {/* Actions */}
+        {/* Handlinger */}
         <div className="flex flex-shrink-0 flex-col items-end gap-2">
-          {isOwn ? (
-            /* ── Eget kort: rediger / slett ── */
+
+          {/* ── Administrasjonskontroller ── */}
+          {hasManagement && (
             <>
               {onEdit && (
                 <button
@@ -97,8 +101,10 @@ export function WishCard({
                 </button>
               )}
             </>
-          ) : (
-            /* ── Andres kort: reserver / kjøpt ── */
+          )}
+
+          {/* ── Reservasjon/kjøpt ── */}
+          {hasReservation && !hideReservationStatus && (
             <>
               {/* Ikke reservert */}
               {!wish.reservedBy && onReserve && (
@@ -110,7 +116,7 @@ export function WishCard({
                 </button>
               )}
 
-              {/* Reservert av meg */}
+              {/* Reservert av meg — ikke kjøpt */}
               {isReservedByMe && !isPurchased && (
                 <>
                   <span className="rounded-full bg-fuchsia-100 px-2 py-0.5 text-xs font-semibold text-fuchsia-700">
@@ -152,10 +158,29 @@ export function WishCard({
                 </>
               )}
 
-              {/* Reservert av andre */}
+              {/* Reservert/kjøpt av andre */}
               {isReservedByOther && (
                 <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-semibold text-zinc-500">
                   {isPurchased ? "Kjøpt ✅" : "Tatt"}
+                </span>
+              )}
+            </>
+          )}
+
+          {/* Foreldre uten reservasjon: direkte kjøpt-knapp */}
+          {hasManagement && !hasReservation && !hideReservationStatus && (
+            <>
+              {isReservedByMe && !isPurchased && onMarkPurchased && (
+                <button
+                  onClick={() => onMarkPurchased(wish.id)}
+                  className="rounded-lg bg-green-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-green-700"
+                >
+                  Kjøpt ✅
+                </button>
+              )}
+              {isReservedByOther && (
+                <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-semibold text-zinc-500">
+                  {isPurchased ? "Kjøpt ✅" : "Tatt av andre"}
                 </span>
               )}
             </>

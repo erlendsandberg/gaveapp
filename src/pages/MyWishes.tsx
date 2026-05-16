@@ -125,7 +125,7 @@ export function MyWishes() {
             <WishCard
               key={wish.id}
               wish={wish}
-              isOwn={true}
+              hideReservationStatus={true}
               currentUserId={user?.uid}
               onEdit={(w) => {
                 setShowForm(false);

@@ -316,21 +316,18 @@ export function MemberWishes() {
               <WishCard
                 key={wish.id}
                 wish={wish}
-                isOwn={isParent}
                 currentUserId={user?.uid}
+                hideReservationStatus={false}
                 onEdit={
                   isParent
-                    ? (w) => {
-                        setShowAddForm(false);
-                        setEditingWish(w);
-                      }
+                    ? (w) => { setShowAddForm(false); setEditingWish(w); }
                     : undefined
                 }
                 onDelete={isParent ? handleDelete : undefined}
                 onReserve={!isParent ? handleReserve : undefined}
                 onUnreserve={!isParent ? handleUnreserve : undefined}
-                onMarkPurchased={!isParent ? handleMarkPurchased : undefined}
-                onUnmarkPurchased={!isParent ? handleUnmarkPurchased : undefined}
+                onMarkPurchased={handleMarkPurchased}
+                onUnmarkPurchased={handleUnmarkPurchased}
               />
             ))}
           </div>
