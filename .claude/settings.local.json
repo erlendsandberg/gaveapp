@@ -18,7 +18,9 @@
       "PowerShell($content = Get-Content \"C:\\\\Users\\\\ErlendSynnes-Sandber\\\\OneDrive - ESS Consulting AS\\\\ESSC\\\\AI\\\\Claude Code\\\\gaveapp\\\\.claude\\\\settings.local.json\" -Raw; $json = $content | ConvertFrom-Json; $cmd = $json.hooks.Stop[0].hooks[0].command; Write-Output \"Hook-kommando: $cmd\")",
       "Bash(npx vite *)",
       "Bash(ping -n 4 127.0.0.1)",
-      "Bash(Get-Content \"C:\\\\Users\\\\ERLEND~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-ErlendSynnes-Sandber-OneDrive---ESS-Consulting-AS-ESSC-AI-Claude-Code-gaveapp\\\\082922f6-029e-4799-85dd-a4905cdd9a24\\\\tasks\\\\b3xw8eoal.output\")"
+      "Bash(Get-Content \"C:\\\\Users\\\\ERLEND~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-ErlendSynnes-Sandber-OneDrive---ESS-Consulting-AS-ESSC-AI-Claude-Code-gaveapp\\\\082922f6-029e-4799-85dd-a4905cdd9a24\\\\tasks\\\\b3xw8eoal.output\")",
+      "Bash(not exist *)",
+      "mcp__Claude_Preview__preview_start"
     ]
   },
   "hooks": {
